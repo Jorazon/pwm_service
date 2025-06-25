@@ -12,13 +12,15 @@
 #define SOCKET_PATH "/tmp/pwm_service.sock"
 // Maximum message size
 #define MAX_MSG_LEN 256
+// PWM base clock frequency
+#define PWM_BASE_HZ 19200000
 // PWM range (WiringPi default)
 #define PWM_RANGE 1024
 
 // Structure for PWM request
 struct pwm_request {
     int pin;          // GPIO pin number (WiringPi numbering)
-    int duty_cycle;   // Duty cycle (0 to 100)
+    int duty_cycle;   // Duty cycle (0 to PWM_RANGE)
     int frequency;    // PWM frequency in Hz
 };
 
@@ -120,8 +122,8 @@ int main(void) {
         pinMode(req.pin, PWM_OUTPUT);
         pwmSetMode(PWM_MODE_MS); // Mark-Space mode
         pwmSetRange(PWM_RANGE);
-        pwmSetClock(19200000 / (req.frequency * PWM_RANGE)); // Adjust clock for frequency
-        pwmWrite(req.pin, (PWM_RANGE * req.duty_cycle) / 100);
+        pwmSetClock(PWM_BASE_HZ / (req.frequency * PWM_RANGE)); // Adjust clock for frequency
+        pwmWrite(req.pin, req.duty_cycle);
 
         // Send response
         char *success_msg = "PWM set successfully\n";
