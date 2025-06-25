@@ -34,6 +34,7 @@ $(CLIENT): $(CLIENT_SRC) $(BUILD_DIR)
 
 # Install binary and create service
 install: $(DAEMON) $(BUILD_DIR)
+	sudo systemctl stop pwm_daemon || true
 	sudo install -m 755 $(BUILD_DIR)$(DAEMON) $(INSTALL_DIR)
 	sudo setcap cap_sys_rawio=ep $(INSTALL_DIR)/$(DAEMON)
 	sudo cp ./pwm_daemon.service /etc/systemd/system/
