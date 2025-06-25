@@ -32,17 +32,23 @@ $(DAEMON): $(DAEMON_SRC) $(BUILD_DIR)
 $(CLIENT): $(CLIENT_SRC) $(BUILD_DIR)
 	$(CC) $(CFLAGS) -o $(BUILD_DIR)$@ $<
 
-# Install binaries
+# Install binary and create service
 install: $(DAEMON) $(BUILD_DIR)
 	sudo install -m 755 $(BUILD_DIR)$(DAEMON) $(INSTALL_DIR)
 	sudo setcap cap_sys_rawio=ep $(INSTALL_DIR)/$(DAEMON)
+	sudo cp ./pwm_daemon.service /etc/systemd/system/
+	sudo systemctl enable pwm_daemon
+	sudo systemctl start pwm_daemon
 
 # Clean build files
 clean:
 	rm -rf $(BUILD_DIR)
 
-# Uninstall binaries
+# Remove service and uninstall binary
 uninstall:
+	sudo systemctl stop pwm_daemon
+	sudo systemctl disable pwm_daemon
+	sudo rm -f /etc/systemd/system/pwm_daemon.service
 	sudo rm -f $(INSTALL_DIR)/$(DAEMON)
 
 # Phony targets
