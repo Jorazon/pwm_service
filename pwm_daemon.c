@@ -51,8 +51,8 @@ int main(void) {
     // Daemonize the process
     //daemonize();
 
-    // Initialize WiringPi
-    if (wiringPiSetup() == -1) {
+    // Initialize WiringPi in physical pin numbering mode
+    if (wiringPiSetupPhys() == -1) {
         // Logging to syslog or file could be added here
         exit(EXIT_FAILURE);
     }

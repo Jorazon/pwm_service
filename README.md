@@ -41,7 +41,7 @@ make pwm_client
 Set GPIO12 (physical 32, WPi 26) to output a 50% duty cycle 390 Hz PWM signal.
 
 ```bash
-./build/pwm_client 26 512 390
+./build/pwm_client 32 512 390
 ```
 
 ## TODO
