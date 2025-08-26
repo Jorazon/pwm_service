@@ -1,15 +1,16 @@
 # Compiler and flags
 CC = gcc
-CFLAGS = -Wall -O2
-LDFLAGS = -lwiringPi
+CFLAGS = -Wall
 
 # Target binaries
 DAEMON = pwm_daemon
 CLIENT = pwm_client
+PULSE = pwm_pulse
 
 # Source files
 DAEMON_SRC = pwm_daemon.c
 CLIENT_SRC = pwm_client.c
+PULSE_SRC = pulse.c
 
 # Installation path
 BUILD_DIR = ./build/
@@ -18,7 +19,7 @@ INSTALL_DIR = /usr/local/bin
 default: $(DAEMON)
 
 # Build all
-all: $(DAEMON) $(CLIENT)
+all: $(DAEMON) $(CLIENT) $(PULSE)
 
 $(BUILD_DIR):
 	mkdir $(BUILD_DIR)
@@ -26,11 +27,15 @@ $(BUILD_DIR):
 
 # Build daemon
 $(DAEMON): $(DAEMON_SRC) $(BUILD_DIR)
-	$(CC) $(CFLAGS) -o $(BUILD_DIR)$@ $< $(LDFLAGS)
+	$(CC) $(CFLAGS) -o $(BUILD_DIR)$@ $< -lwiringPi -lpthread
 
 # Build client
 $(CLIENT): $(CLIENT_SRC) $(BUILD_DIR)
 	$(CC) $(CFLAGS) -o $(BUILD_DIR)$@ $<
+
+# Build pulse
+$(PULSE): $(PULSE_SRC) $(BUILD_DIR)
+	$(CC) $(CFLAGS) -o $(BUILD_DIR)$@ $< -lm
 
 # Install binary and create service
 install: $(DAEMON) $(BUILD_DIR)
