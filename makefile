@@ -27,7 +27,7 @@ $(BUILD_DIR):
 
 # Build daemon
 $(DAEMON): $(DAEMON_SRC) $(BUILD_DIR)
-	$(CC) $(CFLAGS) -o $(BUILD_DIR)$@ $< -lwiringPi -lpthread
+	$(CC) $(CFLAGS) -o $(BUILD_DIR)$@ $< -lwiringPi -lpthread -D_GNU_SOURCE
 
 # Build client
 $(CLIENT): $(CLIENT_SRC) $(BUILD_DIR)

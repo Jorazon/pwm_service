@@ -53,7 +53,7 @@ int initThreadPool(struct ThreadPool *pool) {
 struct ThreadSlot * getThread(struct ThreadPool *pool) {
     pthread_mutex_lock(&pool->pool_mutex);
     while (pool->active_threads >= MAX_THREADS) {
-        printf("Max threads (%d) reached, waiting for free slot...\n", MAX_THREADS);
+        printf("Max threads reached (%d), waiting for free slot...\n", MAX_THREADS);
         pthread_cond_wait(&pool->pool_available, &pool->pool_mutex);
     }
     int slot_index;
@@ -153,8 +153,14 @@ void *connection_task(void *arg) {
             pwmWrite(req.pin, req.duty_cycle);
             
             // Send response
-            char *success_msg = "PWM set successfully\n";
-            send(client_fd, success_msg, strlen(success_msg), 0);
+            char *success_msg = NULL;
+            int length = asprintf(&success_msg, "PWM set successfully [Pin: %2d, Duty: %4d, Freq: %4d]", req.pin, req.duty_cycle, req.frequency);
+            if (success_msg) {
+                send(client_fd, success_msg, length + 1, 0);
+                free(success_msg);
+            } else {
+                perror("Buy more RAM lol");
+            }
         }
     }
     FD_CLR(client_fd, &connections);

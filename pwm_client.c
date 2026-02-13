@@ -16,7 +16,7 @@ struct pwm_request {
 
 int main(int argc, char *argv[]) {
     if (argc != 4) {
-        fprintf(stderr, "Usage: %s <pin> <duty_cycle 0..100> <frequency>\n", argv[0]);
+        fprintf(stderr, "Usage: %s <pin> <duty_cycle 0..1023> <frequency>\n", argv[0]);
         exit(EXIT_FAILURE);
     }
 
@@ -57,7 +57,9 @@ int main(int argc, char *argv[]) {
     ssize_t bytes = recv(sock, buffer, MAX_MSG_LEN - 1, 0);
     if (bytes > 0) {
         buffer[bytes] = '\0';
-        printf("%s", buffer);
+        printf("%s\n", buffer);
+    } else {
+        perror("nothing received from socket");
     }
 
     close(sock);
